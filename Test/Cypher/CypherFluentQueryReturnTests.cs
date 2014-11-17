@@ -105,6 +105,19 @@ namespace Neo4jClient.Test.Cypher
         }
 
         [Test]
+        public void ReturnWithRawCypher()
+        {
+            var client = Substitute.For<IRawGraphClient>();
+            var query = ((ICypherFluentQuery) new CypherFluentQuery(client))
+                .Return<object>("foo bar qux", CypherResultMode.Projection)
+                .Query
+            ;
+
+            Assert.AreEqual("RETURN foo bar qux", query.QueryText);
+            Assert.AreEqual(CypherResultMode.Projection, query.ResultMode);
+        }
+
+        [Test]
         [Description("https://bitbucket.org/Readify/neo4jclient/issue/42")]
         public void ShouldCombineWithLimitAndOrderBy()
         {

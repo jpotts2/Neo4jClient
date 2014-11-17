@@ -24,10 +24,13 @@ namespace Neo4jClient.Cypher
             return Mutate<TResult>(w => w.AppendClause("RETURN " + identity));
         }
 
-        [Obsolete("This was an internal that never should have been exposed. If you want to create a projection, you should be using the lambda overload instead. See the 'Using Functions in Return Clauses' and 'Using Custom Text in Return Clauses' sections of https://bitbucket.org/Readify/neo4jclient/wiki/cypher for details of how to do this.", true)]
         ICypherFluentQuery<TResult> ICypherFluentQuery.Return<TResult>(string statement, CypherResultMode resultMode)
         {
-            throw new NotSupportedException("This was an internal that never should have been exposed. If you want to create a projection, you should be using the lambda overload instead. See the 'Using Functions in Return Clauses' and 'Using Custom Text in Return Clauses' sections of https://bitbucket.org/Readify/neo4jclient/wiki/cypher for details of how to do this.");
+            return Mutate<TResult>(w =>
+            {
+                w.ResultMode = resultMode;
+                w.AppendClause("RETURN " + statement);
+            });
         }
 
         public ICypherFluentQuery<TResult> ReturnDistinct<TResult>(string identity)
